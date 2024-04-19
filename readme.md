@@ -2,6 +2,8 @@ Home Screen Vault
 ---
 A widget allowing you to browse note entries of a Obsidian vault, on home screen
 
+<img src="Preview1.png" width="300px"></img>
+
 ### Notice
 
 - This widget is responsive but some devices provides incorrect widget dimensions to the widget, in this case you need to set a width correction factor. Enable debug line in configuration and adjust the factor until the line is as long as the width of the widget.
@@ -32,8 +34,6 @@ A widget allowing you to browse note entries of a Obsidian vault, on home screen
 - Gemini-Pro & Poe
 - [Obsidian](https://obsidian.md/)
 - [YukiGasai/obsidian-todo-widget](https://github.com/YukiGasai/obsidian-todo-widget) for some references
-
-![](Preview1.png)
 
 
 
