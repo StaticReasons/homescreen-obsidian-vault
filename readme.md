@@ -15,9 +15,9 @@ A widget allowing you to browse note entries of a Obsidian vault, on home screen
 
 - This widget is still not fully developed --- Actually it's my first time to make a Android project; There's still too much I don't know about Android. This work is still a beta of beta, with many parts still not following the best practices I've known or dont know for architecting a real project. (Why is it just so hard to determine a structure in Android???)
 
-  If you found any strange design pattern in my codebase, like "Why don't you abstract out a data source?" or "Why do you put scanning work inside repository layer?" --- My response will all be "I don't know.""I'm not sure.""I haven't learned that yet." There should be hardly any architecture designs made with any so-called "underlying deep meaning". You are very very welcomed to help me point out where could be better redesigned/refactored. Also art/ui recommendations are welcomed too.
+  If you found any strange design pattern in my codebase, like "Why don't you abstract out a data source?" or "Why do you put scanning work inside repository layer?" --- My response will all be "I don't know.""I'm not sure.""I haven't learned that yet." There should be hardly any architecture designs made with any so-called "underlying deep meaning". (and I found Gemini-Pro is still not very smart on Android architectureing.) Instead, I really need the insights from Android professionals. You are very very welcomed to help me point out where could be better redesigned/refactored. Also art/ui-designing recommendations are very welcomed.
 
-  Plus, probably I could hardly spare much effort on the enhancements of this project for some times to come.... This project really needs your valuable feedback, your valuable inspections and suggestions(on the structure of this project because I found Gemini is still not very smart), and even your valuable collaboration to be developed further. In a word this project really needs your help.
+  Plus, I'm afraid I could only spare a small amout of time on the enhancements of this project for the next months to come.... So this project really needs your valuable feedback, your valuable insights and suggestions, or even your valuable collaboration to be developed further. In a word this project really needs your help.
 
 
 # Todo - Enhancements
@@ -26,28 +26,34 @@ A widget allowing you to browse note entries of a Obsidian vault, on home screen
 - Responsive design:
   - [ ] Combine Navigator and title when width is tight
   - [x] Smartly set the column numbers of file grid
-- [ ] ```WidgetStateRepository``` thorough ```StateFlows```
+- [ ] ```WidgetStateRepository``` provide thorough ```StateFlows```
+- [ ] Now it is still a bit laggy --- it needs a long-time loading after boot & a short-time updating after user's interaction. Why?
 - [ ] ```MainActivity``` fully adapt to flow of ```AppConfig```
 - [ ] idk what else...refactor my spaghetti codes?
 
 # Credits
 - Gemini-Pro & Poe
 - [Obsidian](https://obsidian.md/)
-- [YukiGasai/obsidian-todo-widget](https://github.com/YukiGasai/obsidian-todo-widget) for some references
+- [YukiGasai/obsidian-todo-widget](https://github.com/YukiGasai/obsidian-todo-widget) for some references and inspirations
 
-
-
-
-
-
-
-
-
-
----
-
-<sub><sub><sub><sub>but why, no one of the Obsidian users all over the world had even thought to made it.......</sub></sub></sub></sub>
-
-<sub><sub><sub><sub>......</sub></sub></sub></sub>
-
-*<sub><sub><sub><sub>ASCENSION MUST BE MADE. WHATEVER IT COSTS.</sub></sub></sub></sub>*
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+<sub><sub><sub><sub>but why, no one of the Obsidian users all over the world had even thought to made it.......\
+......\
+*ASCENSION MUST BE MADE. WHATEVER IT COSTS.</sub></sub></sub></sub>*
