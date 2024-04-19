@@ -106,8 +106,8 @@ class AppConfigUiState(
         ) else null
 
     companion object {
-        const val MIN_HIGH_FREQ_SCAN_INTERVAL_SECS = 3
-        const val MIN_LOW_FREQ_SCAN_INTERVAL_SECS = 6
+        const val MIN_HIGH_FREQ_SCAN_INTERVAL_SECS = 60
+        const val MIN_LOW_FREQ_SCAN_INTERVAL_SECS = 120
         fun fromAppConfig(appConfig: AppConfig): AppConfigUiState{
             return AppConfigUiState().apply {
                 highFreqScanIntervalSecs = appConfig.highFreqScanIntervalSecs
