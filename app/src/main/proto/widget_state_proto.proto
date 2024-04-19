@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_package = "com.hyperrecursion.home_screen_vault2.widget";
+option java_multiple_files = true;
+
+message WidgetStateProto {
+  FolderStateProto root_state = 1;
+  int32 noChangeCount = 2;
+}
+
+message FolderStateProto {
+  string path = 1;
+  string name = 2;
+  int64 modified_time = 3;
+  bool is_expanded = 5;
+  bool star = 9;
+  int64 starred_time = 10;
+  SortOrderProto sort_order = 6;
+  repeated FolderStateProto folders = 7;
+  repeated FileStateProto files = 8;
+  int32 noChangeCount = 11;
+}
+
+message FileStateProto {
+  string path = 1;
+  string name = 2;
+  string description = 3;
+  int64 modified_time = 4;
+  bool star = 6;
+  int64 starred_time = 10;
+  int32 noChangeCount = 11;
+}
+
+enum SortOrderProto {
+  NAME_ASC = 0;
+  NAME_DESC = 1;
+  MODIFIED_ASC = 2;
+  MODIFIED_DESC = 3;
+}
