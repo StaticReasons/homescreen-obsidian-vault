@@ -43,8 +43,6 @@ import androidx.glance.layout.width
 import androidx.glance.layout.wrapContentHeight
 import androidx.glance.layout.wrapContentSize
 import androidx.glance.layout.wrapContentWidth
-import androidx.glance.preview.ExperimentalGlancePreviewApi
-import androidx.glance.preview.Preview
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import com.hyperrecursion.home_screen_vault2.AppConfig
@@ -77,9 +75,9 @@ class Widget : GlanceAppWidget() {
         val foldedFolderWidth: Dp = 116.dp
         val fileMinWidth: Dp = 144.dp
 
-        val defaultpadding: Dp = 6.dp
+        val defaultPadding: Dp = 6.dp
 
-        const val rootPath: String = "/"
+        const val ROOT_PATH: String = "/"   // idk how to deal with it. Current path mechanisms are apparently not elegant enough
         val sortOrderIconResIds: Map<WidgetState.SortOrder, Int> = mapOf(
             WidgetState.SortOrder.NAME_ASC to R.drawable.alphabetical_sorting,
             WidgetState.SortOrder.NAME_DESC to R.drawable.alphabetical_sorting_2,
@@ -199,7 +197,7 @@ fun WidgetContent(
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize(),
         ) {
-            FolderView(
+            folderView(
                 state = rootState,
                 pageParams = pageParams,
                 widgetWidth = widgetWidth,
@@ -240,7 +238,7 @@ fun calculatePageParams(
     widgetWidth: Dp? = null,
 ): WidgetUiState.PageParams {
     val fileGridColumns = if (widgetWidth == null) 1
-    else ((widgetWidth - 2 * depth * Widget.defaultpadding
+    else ((widgetWidth - 2 * depth * Widget.defaultPadding
             - if (state.foldedFolders.isEmpty()) 0.dp else Widget.foldedFolderWidth) / Widget.fileMinWidth).toInt()
         .coerceAtLeast(1)
 //    Log.d("FolderView", "fileGridColumns: $fileGridColumns, widgetWidth: $widgetWidth")
@@ -418,9 +416,9 @@ fun RootBar(
 
 
 // Magic
-fun LazyListScope.FolderView(
+fun LazyListScope.folderView(
     state: WidgetUiState.FolderState,
-    sourcePath: String = Widget.rootPath,
+    sourcePath: String = Widget.ROOT_PATH,
     pageParams: WidgetUiState.PageParams,
     depth: Int = 0,
     widgetWidth: Dp? = null,
@@ -456,8 +454,8 @@ fun LazyListScope.FolderView(
                 modifier = modifier
                     .fillMaxWidth().height(lazyHeight + 2 * 6.dp)
                     .padding(
-                        horizontal = Widget.defaultpadding * (depth + 1),
-                        vertical = Widget.defaultpadding
+                        horizontal = Widget.defaultPadding * (depth + 1),
+                        vertical = Widget.defaultPadding
                     ),
                 verticalAlignment = Alignment.Top,
                 horizontalAlignment = Alignment.Start
@@ -467,7 +465,7 @@ fun LazyListScope.FolderView(
                     Column(
                         modifier = modifier
                             .width(Widget.foldedFolderWidth).fillMaxHeight()
-                            .padding(end = Widget.defaultpadding),
+                            .padding(end = Widget.defaultPadding),
                     ) {
                         displayFolders.forEach {
                             FoldedFolder(
@@ -507,7 +505,7 @@ fun LazyListScope.FolderView(
         }
     }
     state.expandedFolders.forEach {
-        ExpandedFolder(
+        expandedFolder(
             state = it,
             sourcePath = sourcePath,
             sortOrder = it.sortOrder,
@@ -537,7 +535,7 @@ fun ExpandedFolderBar(
     Row(
         modifier = modifier
             .fillMaxWidth().height(36.dp)
-            .padding(horizontal = Widget.defaultpadding * depth)
+            .padding(horizontal = Widget.defaultPadding * depth)
     ) {
         Box(
             modifier = modifier
@@ -616,7 +614,7 @@ fun ExpandedFolderBar(
 }
 
 // Bar + view
-fun LazyListScope.ExpandedFolder(
+fun LazyListScope.expandedFolder(
     state: WidgetUiState.FolderState,
     sourcePath: String,
     sortOrder: WidgetState.SortOrder,
@@ -634,7 +632,7 @@ fun LazyListScope.ExpandedFolder(
     )
     item {
         ExpandedFolderBar(
-            title = "$sourcePath${state.name}".replaceFirst(Widget.rootPath, ""),
+            title = "$sourcePath${state.name}".replaceFirst(Widget.ROOT_PATH, ""),
             sortOrder = sortOrder,
             star = state.star,
             pageParams = pageParams,
@@ -646,7 +644,7 @@ fun LazyListScope.ExpandedFolder(
             modifier = modifier,
         )
     }
-    FolderView(
+    folderView(
         state = state,
         pageParams = pageParams,
         sourcePath = "$sourcePath${state.name}/",
@@ -779,7 +777,7 @@ fun File(
             contentColor = if (state.star) starColor else widgetColors.onPrimary, // FaQ!!!!!!!!!!!!!
             backgroundColor = null,
             onClick = {
-                state.star = !state.star;
+                state.star = !state.star
                 toSaveState()
             },
             modifier = starModifier,
@@ -788,12 +786,12 @@ fun File(
     }
 }
 
-
-@OptIn(ExperimentalGlancePreviewApi::class)
-@Preview(
-    surface = "1913"
-)
-@Composable
-fun MyContentPreview() {
-    ExampleContent()
-}
+// Gosh How to preview it? I could see nothing!
+//@OptIn(ExperimentalGlancePreviewApi::class)
+//@Preview(
+//    surface = "1913"
+//)
+//@Composable
+//fun MyContentPreview() {
+//    ExampleContent()
+//}
