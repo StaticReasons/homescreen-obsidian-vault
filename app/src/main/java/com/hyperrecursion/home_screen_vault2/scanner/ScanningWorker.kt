@@ -8,24 +8,19 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.hyperrecursion.home_screen_vault2.AppConfigRepository
 import com.hyperrecursion.home_screen_vault2.widget.WidgetStateRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class ScanningWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted private val workerParams: WorkerParameters,
-    private val appConfigRepo: AppConfigRepository,
     private val widgetStateRepo: WidgetStateRepository,
 ) : CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-
-        val appConfig = appConfigRepo.getAppConfigFlow().first()
 
         widgetStateRepo.updateByNewScan().let { result ->
             if (result.isSuccess) {

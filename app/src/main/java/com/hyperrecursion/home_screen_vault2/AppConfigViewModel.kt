@@ -102,7 +102,8 @@ class AppConfigUiState(
             highFreqScanIntervalSecs = highFreqScanIntervalSecs ?: 60,
             lowFreqScanIntervalSecs = lowFreqScanIntervalSecs ?: (60 * 60),
             vaultPath = vaultPath,
-            enableDebugLine = enableDebugLine
+            enableDebugLine = enableDebugLine,
+            widthCorrection = widthCorrection ?: 1.0
         ) else null
 
     companion object {
@@ -114,6 +115,7 @@ class AppConfigUiState(
                 lowFreqScanIntervalSecs = appConfig.lowFreqScanIntervalSecs
                 vaultPath = appConfig.vaultPath
                 enableDebugLine = appConfig.enableDebugLine
+                widthCorrection = appConfig.widthCorrection
             }
         }
     }

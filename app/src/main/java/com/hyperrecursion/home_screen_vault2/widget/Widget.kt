@@ -33,6 +33,7 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
@@ -71,10 +72,10 @@ class Widget : GlanceAppWidget() {
     companion object {
         val foldedFolderHeight: Dp = 36.dp
         val fileHeight: Dp = 54.dp
-        val defaultFirstViewHeight: Dp = 108.dp
+        val defaultFirstViewHeight: Dp = 162.dp
 
         val foldedFolderWidth: Dp = 116.dp
-        val fileMinWidth: Dp = 72.dp
+        val fileMinWidth: Dp = 144.dp
 
         val defaultpadding: Dp = 6.dp
 
@@ -118,9 +119,11 @@ class Widget : GlanceAppWidget() {
 //            val widgetState = WidgetState.testState
             val coroutineScope = rememberCoroutineScope()
             val widgetStateRepository = remember { getWidgetStateRepository(context) }
-            val repoWidgetState by widgetStateRepository.getWidgetStateFlow().collectAsState(initial = WidgetState.defaultState)
+            val repoWidgetState by widgetStateRepository.getWidgetStateFlow()
+                .collectAsState(initial = WidgetState.defaultState)
             val appConfigRepository = remember { getAppConfigRepository(context) }
-            val appConfig by appConfigRepository.getAppConfigFlow().collectAsState(initial = AppConfig())
+            val appConfig =
+                appConfigRepository.getAppConfigFlow().collectAsState(initial = AppConfig()).value
             val uiState by remember {
                 mutableStateOf(WidgetUiState.fromRepoWidgetState(repoWidgetState))
             }
@@ -132,18 +135,14 @@ class Widget : GlanceAppWidget() {
                     widthCorrectionFactor = appConfig.widthCorrection,
                     enableDebugLine = appConfig.enableDebugLine,
                     makeOpenAction = { path: String ->
-                        val encodedVault =
-                            URLEncoder.encode(appConfig.vaultPath, "UTF-8").replace("+", "%20")
-                        val file = path.let {
-                            val source = it.substringBeforeLast("/")
-                            val name = it.substringAfterLast("/")
-                            "$source/$name"
-                        }.substringAfter("/")
+                        // Reference: https://help.obsidian.md/Extending+Obsidian/Obsidian+URI
+                        val vault = appConfig.vaultPath.substringAfterLast("/")
+                        val encodedVault = URLEncoder.encode(vault, "UTF-8").replace("+", "%20")
+                        val file = path.removePrefix("/")
                         val encodedFile = URLEncoder.encode(file, "UTF-8").replace("+", "%20")
-                        val openNote = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("obsidian://open?vault=$encodedVault&file=$encodedFile")
-                        )
+                        val uri = Uri.parse("obsidian://open?vault=$encodedVault&file=$encodedFile")
+                        val openNote = Intent(Intent.ACTION_VIEW, uri)
+//                        Log.d("WidgetOpenIntent", "Opening Uri: $uri")
                         return@WidgetContent actionStartActivity(openNote)
                     },
                     toSaveState = {
@@ -255,7 +254,8 @@ fun calculatePageParams(
         )
     val foldersPageSize = (firstViewHeight / Widget.foldedFolderHeight).toInt()
     val totalPagesFolders =
-        if (state.foldedFolders.isEmpty()) 0 else state.foldedFolders.count().ceilDiv(foldersPageSize)
+        if (state.foldedFolders.isEmpty()) 0 else state.foldedFolders.count()
+            .ceilDiv(foldersPageSize)
 
     val filesPageSize =
         (firstViewHeight / Widget.fileHeight).toInt() * fileGridColumns
@@ -483,11 +483,12 @@ fun LazyListScope.FolderView(
                 Column(
                     modifier = modifier
                         .defaultWeight().fillMaxHeight(),
+                    verticalAlignment = Alignment.Top,
                 ) {
                     displayFiles.map { rowChunk ->
                         Row(
                             modifier = modifier
-                                .fillMaxWidth().defaultWeight()
+                                .fillMaxWidth().height(Widget.fileHeight)
                         ) {
                             rowChunk.map {
                                 File(
@@ -650,6 +651,7 @@ fun LazyListScope.ExpandedFolder(
         pageParams = pageParams,
         sourcePath = "$sourcePath${state.name}/",
         depth = depth,
+        widgetWidth = widgetWidth,
         modifier = modifier,
         makeOpenAction = makeOpenAction,
         toSaveState = toSaveState,
@@ -737,15 +739,20 @@ fun File(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.Start,
             ) {
-                Text(
-                    text = state.name.substringBeforeLast(".").ifEmpty { state.name },
-                    style = WidgetTypography.titleSmall.copy(
-                        color = widgetColors.onPrimary,
-                        textAlign = TextAlign.Left,
-                    ),
-                    maxLines = 1,
-                    modifier = modifier.wrapContentSize(),
-                )
+                Column(
+                    modifier = modifier.defaultWeight().fillMaxHeight()
+                ) {
+                    Text(
+                        text = state.name.substringBeforeLast(".").ifEmpty { state.name },
+                        style = WidgetTypography.titleSmall.copy(
+                            color = widgetColors.onPrimary,
+                            textAlign = TextAlign.Left,
+                        ),
+                        maxLines = 1,
+                        modifier = modifier.wrapContentWidth().fillMaxHeight(),
+                        )
+                }
+                Spacer(modifier = modifier.width(18.dp))
             }
             // Description
             Row(

@@ -16,6 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -69,36 +71,44 @@ class WidgetStateRepository constructor(
     // for widget's use
     suspend fun updateByWidget(widgetState: WidgetState) {
         saveWidgetState(widgetState)
-        ScanningWorker.updateWork(
-            appConfigRepository.getAppConfigFlow().first().highFreqScanIntervalSecs.toLong(),
-            context
-        )
-        updateByNewScan()
-    }
-
-    suspend fun updateByNewScan(): Result<Unit> = withContext(Dispatchers.IO) {
-        val appConfig = appConfigRepository.getAppConfigFlow().first()
-        val vaultFolder = File(Environment.getExternalStorageDirectory(), appConfig.vaultPath)
-        val prevState = getWidgetStateFlow().first()
-        val newWidgetState = scannedAndUpdatedState(prevState, vaultFolder)
-        if (newWidgetState != null) {
-            saveWidgetState(newWidgetState)
-            updateUI()
-            if (newWidgetState.noChangeCount == 10) {
-                ScanningWorker.updateWork(
-                    appConfigRepository.getAppConfigFlow().first().lowFreqScanIntervalSecs.toLong(),
-                    context
-                )
-            }
-            Log.d(
-                "WidgetStateRepository",
-                "updateByNewScan: newWidgetState.noChangeCount = ${newWidgetState.noChangeCount}"
+        coroutineScope {
+            delay(10000)
+            ScanningWorker.updateWork(
+                appConfigRepository.getAppConfigFlow().first().highFreqScanIntervalSecs.toLong(),
+                context
             )
-            return@withContext Result.success(Unit)
-        } else {
-            return@withContext Result.failure(Exception("Failed to update widget state"))
+            updateByNewScan(updateUI = true)
+            Log.d("WidgetStateRepository", "updateByNewScan")
         }
     }
+
+    suspend fun updateByNewScan(updateUI: Boolean = true): Result<Unit> =
+        withContext(Dispatchers.IO) {
+            val appConfig = appConfigRepository.getAppConfigFlow().first()
+            val vaultFolder = File(Environment.getExternalStorageDirectory(), appConfig.vaultPath)
+            val prevState = getWidgetStateFlow().first()
+            val newWidgetState = scannedAndUpdatedState(prevState, vaultFolder)
+            if (newWidgetState != null) {
+                saveWidgetState(newWidgetState)
+                if (updateUI) {
+                    updateUI()
+                }
+                if (newWidgetState.noChangeCount == 10) {
+                    ScanningWorker.updateWork(
+                        appConfigRepository.getAppConfigFlow()
+                            .first().lowFreqScanIntervalSecs.toLong(),
+                        context
+                    )
+                }
+                Log.d(
+                    "WidgetStateRepository",
+                    "updateByNewScan: newWidgetState.noChangeCount = ${newWidgetState.noChangeCount}"
+                )
+                return@withContext Result.success(Unit)
+            } else {
+                return@withContext Result.failure(Exception("Failed to update widget state"))
+            }
+        }
 
     // back to update widget
     suspend fun updateUI() {
@@ -209,7 +219,8 @@ class WidgetStateRepository constructor(
                     val (folders, files) = filesAndFolders.let { (folders, files) ->
                         folders.filter { !it.name.startsWith(".") }
                             .associateBy({ it.name }, { it }) to
-                                files.associateBy({ it.name }, { it })
+                                files.filter { !it.name.startsWith(".")  }
+                                    .associateBy({ it.name }, { it })
                     }
                     if (folders.keys != prevFolderStates.keys || files.keys != prevFileStates.keys)
                         noChangeCount = 0

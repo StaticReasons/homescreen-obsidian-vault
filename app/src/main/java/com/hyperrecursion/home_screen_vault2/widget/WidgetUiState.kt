@@ -82,12 +82,12 @@ class WidgetUiState(
         val foldedFolders: List<FolderState>
             get() = _folders.filter { !it.isExpanded }.let { folders ->
                 val (starred, unstarred) = folders.partition { it.star }
-                return starred.sortedByDescending { it.starredTime } + unstarred.sorted(sortOrder)
+                return starred.sortedBy { it.starredTime } + unstarred.sorted(sortOrder)
             }
         val expandedFolders: List<FolderState>
             get() = _folders.filter { it.isExpanded }.let { folders ->
                 val (starred, unstarred) = folders.partition { it.star }
-                return starred.sortedByDescending { it.starredTime } + unstarred.sorted(sortOrder)
+                return starred.sortedBy { it.starredTime } + unstarred.sorted(sortOrder)
             }
 
         private var _files = mutableStateListOf<FileState>().apply { addAll(initialFiles) }
