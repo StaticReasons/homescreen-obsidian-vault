@@ -12,7 +12,7 @@ import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.text.Text
-import com.hyperrecursion.home_screen_vault2.MainActivity
+import com.hyperrecursion.home_screen_vault2.AppConfigActivity
 
 
 // Example Content For learning Glance
@@ -44,7 +44,7 @@ fun ExampleContent(
             ) {
                 Button(
                     text = "bbb",
-                    onClick = actionStartActivity<MainActivity>()
+                    onClick = actionStartActivity<AppConfigActivity>()
                 )
             }
             Column(
@@ -54,7 +54,7 @@ fun ExampleContent(
             ) {
                 Button(
                     text = "ccc",
-                    onClick = actionStartActivity<MainActivity>()
+                    onClick = actionStartActivity<AppConfigActivity>()
                 )
             }
         }

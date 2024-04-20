@@ -46,8 +46,8 @@ import androidx.glance.layout.wrapContentWidth
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import com.hyperrecursion.home_screen_vault2.AppConfig
+import com.hyperrecursion.home_screen_vault2.AppConfigActivity
 import com.hyperrecursion.home_screen_vault2.AppConfigRepository
-import com.hyperrecursion.home_screen_vault2.MainActivity
 import com.hyperrecursion.home_screen_vault2.R
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -371,7 +371,7 @@ fun RootBar(
                 contentDescription = "Settings",
                 contentColor = widgetColors.onPrimary,
                 backgroundColor = null,
-                onClick = actionStartActivity<MainActivity>(),
+                onClick = actionStartActivity<AppConfigActivity>(),
                 modifier = modifier.wrapContentSize(),
             )
             // Title

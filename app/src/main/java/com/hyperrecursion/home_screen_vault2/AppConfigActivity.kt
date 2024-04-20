@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class AppConfigActivity : ComponentActivity() {
 
     @Inject
     lateinit var appConfigRepository: AppConfigRepository
@@ -325,7 +325,7 @@ fun AppConfigForm(
 // UriHandler parse and opens URI inside AnnotatedString Item in Browse
         val uriHandler = LocalUriHandler.current
 
-// 🔥 Clickable text returns position of text that is clicked in onClick callback
+// Clickable text returns position of text that is clicked in onClick callback
         ClickableText(
             modifier = modifier
                 .padding(16.dp)

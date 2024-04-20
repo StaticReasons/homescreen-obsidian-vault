@@ -7,7 +7,9 @@ A widget allowing you to browse note entries of a Obsidian vault, on home screen
 ### Notice
 
 - This widget is responsive but some devices provides incorrect widget dimensions to the widget, in this case you need to set a width correction factor. Enable debug line in configuration and adjust the factor until the line is as long as the width of the widget.
+
 - It won't observe file changes at realtime. It scans the vault periodically(period could be set, default is 60s); It also scans once you interact with it.
+
 - After scanning 10 times observing no changes, it will cold down and slows the period of scanning(also could be set, default is 3600s).
 
 - It is super wierd that we cannot read the files & folders in the vault, but only a ".obsidian", even after granting permissions using "Choose Folders" interface.
@@ -19,16 +21,51 @@ A widget allowing you to browse note entries of a Obsidian vault, on home screen
 
   Plus, I'm afraid I could only spare a small amout of time on the enhancements of this project for the next months to come.... So this project really needs your valuable feedback, your valuable insights and suggestions, or even your valuable collaboration to be developed further. In a word this project really needs your help.
 
+### Some tip for viewing the code
+
+- I find the naming pattern "onXXX" for composable functions' callbacks are sometimes just wierd.
+
+  In some cases it is the low-level component itself already able to process the interaction tasks, and the use of this callback is just to notice the upper-level to do something.
+
+  Upper level observing/listening to lower-level's events, in this case it's good to call it **"onXXXX"**.
+
+  However in other cases it is not the lower-layer component to process the business tasks, it needs to pass to the upper layer which is capable to do the job.
+
+  In this case I propose to name it as **"toXXXX"**. This name means the low-level component needs this passed-in lambda to know how to do the job, 
+
+  or it also means the low-level gotta call the upper level to do that job.
+
+  So now there will be two kinds of naming pattern. The key is whether the definition of callback business is literally defined for the upper-level or the lower-level.
+
+  In this project there sometimes exists thorough callback passes up-to-down and down-to-up. Distinguishing them will help us understand what they're doing. But I'm still doubting whether the passing chain is a good practice.
+  
+
 
 # Todo - Enhancements
-- [ ] Add support for multiple vaults & multiple subforders, to be displayed by multiple widgets
-- [ ] Start to use the unused state-checking methods
+- [ ] (1) Add a create note button for each `expandedFolderBar`
+- [ ] (2) Add support for multiple widgets to display multiple vaults or multiple sub-folders
+- Cleanup:
+  - [ ] Extract common logic of circle icon buttons
+  - [ ] Combine RootBar & ExpandedFolderBar and provide a parameter `isRoot` to display in different ways; Then use ExpandedFolder to replace separated layout for root in WidgetContent
+  - What else?
+- Relayout the AppConfigActivity:
+  - [ ] (1) Less Chiglish in settings & Proper layouts for explanations of each options
+  - [ ] Make a preview of the widget after the codebase is stable, (and gotta think how to sync UI changes with least effort?)
+  - [ ] (After that) allow user to customize size parameters for each widget. This needs a preview of the widget.
+  - [ ] (After that) Use fragments / navigation to separate settings into 2+ categories: The General Configs (scan strategies, debug line & correction coefficient) & widget-specific configs (Path & Size Parameters). After supporting multiple widgets the number of categories will be 1+N.
 - Responsive design:
-  - [ ] Combine Navigator and title when width is tight
   - [x] Smartly set the column numbers of file grid
-- [ ] ```WidgetStateRepository``` provide thorough ```StateFlows```
-- [ ] Now it is still a bit laggy --- it needs a long-time loading after boot & a short-time updating after user's interaction. Why?
-- [ ] ```MainActivity``` fully adapt to flow of ```AppConfig```
+  - [ ] (1) Integrate all size information, like first-view height & file-grid width & folder-grid width, into `PageParams`
+  - [ ] (1) (After that) More flexible layout - allow folded folders to be laid with multiple columns when the files are too few to fill up file grid's assigned space.
+  - [ ] Combine Navigator and title when width is tight
+- Data & Architecture Optimization:
+  - [ ] Start to use the unused state-checking methods
+  - [ ] Thorough understand Flows & StateFlows in Data Layer
+  - [ ] ```WidgetStateRepository``` provide thorough ```StateFlows```
+  - [ ] ```MainActivity``` fully adapt to flow of ```AppConfig```
+- Now the widget is still a bit laggy --- it needs a long-time loading after boot & a short-time updating after user's interaction...Why?
+  - [ ] Add delay and test the time consuming operations
+
 - [ ] idk what else...refactor my spaghetti codes?
 
 # Credits
